@@ -1,8 +1,6 @@
 name: Build PHAR release
 
 on:
-    push:
-
     release:
         types:
             - published
