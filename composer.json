@@ -1,0 +1,20 @@
+{
+    "name": "eruban/php-metrics-coupling",
+    "description": "Check coupling between classes using PHP Metrics",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "phpmetrics/phpmetrics": "^2.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eruban\\PhpMetricsCoupling\\": "src"
+        }
+    },
+    "bin": [
+        "bin/pmc"
+    ]
+}
