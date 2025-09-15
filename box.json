@@ -16,7 +16,7 @@
         "bin/pmc",
         "LICENSE",
         "composer.json",
-        "composer.lock",
+        "composer.lock"
     ],
     "output": ".build/phar/pmc.phar"
 }
