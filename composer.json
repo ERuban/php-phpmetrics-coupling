@@ -4,9 +4,7 @@
     "type": "library",
     "license": "BSD-3-Clause",
     "require": {
-        "php": ">=8.2"
-    },
-    "require-dev": {
+        "php": ">=8.2",
         "phpmetrics/phpmetrics": "^2.9"
     },
     "autoload": {

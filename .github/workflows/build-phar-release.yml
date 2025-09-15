@@ -1,0 +1,58 @@
+name: Build PHAR release
+
+on:
+    release:
+        types:
+            - published
+
+jobs:
+    build-release:
+        runs-on: ubuntu-latest
+        timeout-minutes: 4
+        strategy:
+            matrix:
+                php-version:
+                    - '8.2'
+                dependencies:
+                    - locked
+        env:
+            BIN_PHAR: ".build/phar/pmc.phar"
+        steps:
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  tools: composer, box
+                  php-version: "${{ matrix.php-version }}"
+
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - run: git describe --tags HEAD || git tag 0.0.0
+
+            - name: Set current version from ${{ github.ref_name }}
+              run: |
+                  echo "{\"version\": \"${{ github.ref_name }}\", \"type\":\"phar\"}" > version.json
+
+            - name: Install PHP dependencies with Composer
+              uses: ramsey/composer-install@v3
+              with:
+                  composer-options: "--no-dev"
+
+            - name: Build PHAR
+              run: box compile
+
+            - name: 💥 Show info about phar with box-project/box
+              run: box info ${{ env.BIN_PHAR }} --ansi
+
+            - name: 🤔 Run help command
+              run: ${{ env.BIN_PHAR }} --help
+
+            - name: 📤 Upload release assets
+              uses: softprops/action-gh-release@v2.2.1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  token: "${{ secrets.RELEASE_TOKEN }}"
+                  files: |
+                      ${{ env.BIN_PHAR }}
