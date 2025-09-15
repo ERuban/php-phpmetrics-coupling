@@ -9,6 +9,7 @@
     "compression": "GZ",
     "git": "git",
     "directories": [
+        "bin",
         "src",
         "vendor"
     ],
