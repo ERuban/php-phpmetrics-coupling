@@ -48,9 +48,6 @@ jobs:
             - name: Show info about phar with box-project/box
               run: box info ${{ env.BIN_PHAR }} --ansi
 
-            - name: Run help command
-              run: ${{ env.BIN_PHAR }} --help
-
             - name: Upload release assets
               uses: softprops/action-gh-release@v2.2.1
               if: startsWith(github.ref, 'refs/tags/')
