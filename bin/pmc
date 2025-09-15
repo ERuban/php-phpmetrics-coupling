@@ -1,9 +1,10 @@
 #!/usr/bin/env php
 <?php
 declare(strict_types=1);
-error_reporting(error_reporting() & ~E_DEPRECATED);
 
-use EonX\EasyQuality\PhpMetricsChecker\PhpMetricsChecker;
+use Eruban\PhpMetricsCoupling\PhpMetricsChecker;
+
+error_reporting(error_reporting() & ~E_DEPRECATED);
 
 function includeIfExists(string $file)
 {
