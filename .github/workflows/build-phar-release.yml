@@ -31,10 +31,6 @@ jobs:
 
             - run: git describe --tags HEAD || git tag 0.0.0
 
-            - name: Set current version from ${{ github.ref_name }}
-              run: |
-                  echo "{\"version\": \"${{ github.ref_name }}\", \"type\":\"phar\"}" > version.json
-
             - name: Install PHP dependencies with Composer
               uses: ramsey/composer-install@v3
               with:
