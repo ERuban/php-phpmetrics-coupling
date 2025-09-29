@@ -55,7 +55,7 @@ final class ConfigFileReader
 
             $config->set(
                 'suppressions',
-                \array_merge((array)$config->get('suppressions'), [$metricName => \array_flip($metric['skip'])])
+                \array_merge((array)$config->get('suppressions'), [$metricName => $metric['skip']])
             );
         }
     }

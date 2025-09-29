@@ -5,17 +5,9 @@
     "metrics": {
         "cyclomaticComplexity": {
             "skip": [
-                "App\\Entity\\SomeEntity",
-                "App\\Service\\*Generated",
-                "App\\**\\SomeApiResource"
+                "Eruban\\*\\Filter\\SuppressionFilter"
             ],
             "maxValue": 10
-        },
-        "efferentCoupling": {
-            "skip": [
-                "App\\Service\\SomeService"
-            ],
-            "maxValue": 12
         }
     }
 }
