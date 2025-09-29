@@ -56,11 +56,10 @@ final class SuppressionFilter
                 continue;
             }
             foreach ($patterns as $regex) {
-                if ($regex === '' || @\preg_match($regex, '') === false) {
-                    continue;
-                }
                 if (\preg_match($regex, $entityName) === 1) {
                     unset($matchedSearches[$key]);
+
+                    break;
                 }
             }
         }
@@ -75,11 +74,8 @@ final class SuppressionFilter
 
     private function compilePattern(string $pattern): string
     {
-        $delim = '~';
+        $pattern = \str_replace('*', '(.*)', $pattern);
 
-        $escaped = \preg_quote($pattern, $delim);
-        $escaped = \str_replace('*', '(.*)', $escaped);
-
-        return $delim . '^' . $escaped . '$' . $delim . 'u';
+        return '~^' . $pattern . '$~u';
     }
 }
