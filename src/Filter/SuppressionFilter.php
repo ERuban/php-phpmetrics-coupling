@@ -77,10 +77,9 @@ final class SuppressionFilter
     {
         $delim = '~';
 
-        $q = \preg_quote($pattern, $delim);
-        $q = \preg_replace('/(?:\\\\\*){2}/', '.*', $q);
-        $q = \str_replace('\*', '[^\\\\]*', $q);
+        $escaped = \preg_quote($pattern, $delim);
+        $escaped = \str_replace('*', '(.*)', $escaped);
 
-        return $delim . '/^' . $q . '$' . $delim . 'u';
+        return $delim . '^' . $escaped . '$' . $delim . 'u';
     }
 }
