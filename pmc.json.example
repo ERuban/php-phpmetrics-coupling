@@ -1,16 +1,18 @@
 {
-    "includes": [
-        "../src"
+    "paths": [
+        "src"
     ],
     "metrics": {
         "cyclomaticComplexity": {
-            "exclude": [
+            "skip": [
                 "App\\Entity\\SomeEntity",
+                "App\\Service\\*Generated",
+                "App\\**\\SomeApiResource"
             ],
             "maxValue": 10
         },
         "efferentCoupling": {
-            "exclude": [
+            "skip": [
                 "App\\Service\\SomeService"
             ],
             "maxValue": 12
