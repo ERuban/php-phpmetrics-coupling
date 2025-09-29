@@ -5,6 +5,7 @@ namespace Eruban\PhpMetricsCoupling;
 
 use Eruban\PhpMetricsCoupling\Config\ConfigFileReader;
 use Eruban\PhpMetricsCoupling\Report\SearchReporter;
+use Eruban\PhpMetricsCoupling\Filter\SuppressionFilter;
 use Exception;
 use Hal\Application\Analyze;
 use Hal\Application\Config\Config;
@@ -66,24 +67,18 @@ final class PhpMetricsChecker
         $searches = $config->get('searches');
         $searcher = new PatternSearcher();
         $foundSearch = new SearchMetric('searches');
-        /** @var array $suppressions */
-        $suppressions = $config->get('suppressions');
-        $shouldExitDueToCriticalViolationsCount = 0;
+        $suppressions = (array)$config->get('suppressions');
+
+        $suppressionFilter = new SuppressionFilter($suppressions);
+
+        $violationsCount = 0;
         foreach ($searches->all() as $search) {
             /** @var \Hal\Metric\Metric[] $matchedSearches */
             $matchedSearches = $searcher->executes($search, $metrics);
-            // Filter the suppressed violations
-            foreach ($matchedSearches as $key => $matchedSearch) {
-                /** @var array $matched */
-                $matched = $matchedSearch->get('matched-searches');
-                foreach ($this->arrayValuesRecursive($matched) as $match) {
-                    if (isset($suppressions[$match][$matchedSearch->getName()])) {
-                        unset($matchedSearches[$key]);
-                    }
-                }
-            }
 
-            $shouldExitDueToCriticalViolationsCount += \count($matchedSearches);
+            $matchedSearches = $suppressionFilter->filter($search->getName(), $matchedSearches);
+
+            $violationsCount += \count($matchedSearches);
 
             $foundSearch->set($search->getName(), $matchedSearches);
         }
@@ -98,11 +93,11 @@ final class PhpMetricsChecker
             exit(1);
         }
 
-        if ($shouldExitDueToCriticalViolationsCount > 0) {
+        if ($violationsCount > 0) {
             $output->writeln('');
             $output->writeln(\sprintf(
                 '<error>[ERR] Failed due to %d violations</error>',
-                $shouldExitDueToCriticalViolationsCount
+                $violationsCount
             ));
             $output->writeln('');
             exit(1);
@@ -111,26 +106,5 @@ final class PhpMetricsChecker
         $output->writeln('');
         $output->writeln('<success>Done</success>');
         $output->writeln('');
-    }
-
-    /**
-     * @return array<bool|float|int|string>
-     */
-    private function arrayValuesRecursive(array $array): array
-    {
-        $result = [];
-        foreach (\array_keys($array) as $arrayValue) {
-            $value = $array[$arrayValue];
-
-            if (\is_scalar($value)) {
-                $result[] = $value;
-            }
-
-            if (\is_array($value)) {
-                $result = \array_merge($result, $this->arrayValuesRecursive($value));
-            }
-        }
-
-        return $result;
     }
 }

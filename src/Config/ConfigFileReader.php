@@ -25,20 +25,18 @@ final class ConfigFileReader
 
     protected function parseJson(Config $config, array $jsonData, string $fileName): void
     {
-        if (isset($jsonData['includes'])) {
-            $includes = $jsonData['includes'];
+        $pathsKeyData = $jsonData['paths'] ?? null;
+        if ($pathsKeyData !== null) {
             $files = [];
-            foreach ($includes as $include) {
-                $include = $this->resolvePath($include, $fileName);
-                $files[] = $include;
+            foreach ($pathsKeyData as $path) {
+                $path = $this->resolvePath($path, $fileName);
+                $files[] = $path;
             }
             $config->set('files', $files);
         }
 
         $config->set('extensions', 'php');
-
         $config->set('composer', false);
-
         $config->set('exclude', []);
 
         $metrics = $jsonData['metrics'] ?? [];
@@ -46,12 +44,15 @@ final class ConfigFileReader
 
         $config->set('suppressions', []);
         foreach ($metrics as $metricName => $metric) {
-            if (isset($metric['exclude']) && \is_array($metric['exclude'])) {
-                $config->set(
-                    'suppressions',
-                    \array_merge((array)$config->get('suppressions'), [$metricName => \array_flip($metric['exclude'])])
-                );
+            $skipList = $metric['skip'] ?? null;
+            if (\is_array($skipList) === false) {
+                continue;
             }
+
+            $config->set(
+                'suppressions',
+                \array_merge((array)$config->get('suppressions'), [$metricName => \array_flip($metric['skip'])])
+            );
         }
     }
 
