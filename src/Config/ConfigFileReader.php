@@ -11,6 +11,10 @@ final class ConfigFileReader
 {
     public function read(Config $config, string $fileName): void
     {
+        if (\file_exists($fileName) === false) {
+            throw new InvalidArgumentException("Configuration file '$fileName' does not exist");
+        }
+
         $jsonText = \file_get_contents($fileName);
 
         if ($jsonText === false) {
