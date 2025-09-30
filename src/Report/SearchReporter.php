@@ -31,7 +31,7 @@ final class SearchReporter
                 $this->displayCliReport($name, $search);
             }
 
-            if ($unusedSkips[$name] !== []) {
+            if (isset($unusedSkips[$name]) && $unusedSkips[$name] !== []) {
                 $this->displayUnusedSkipsNotification($unusedSkips[$name], $name);
             }
         }
