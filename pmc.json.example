@@ -13,7 +13,6 @@
         },
         "efferentCoupling": {
             "skip": [
-                "App\\Service\\SomeService"
             ],
             "maxValue": 12
         }
