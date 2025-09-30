@@ -77,6 +77,7 @@ final class PhpMetricsChecker
             $matchedSearches = $searcher->executes($search, $metrics);
 
             $matchedSearches = $suppressionFilter->filter($search->getName(), $matchedSearches);
+            $unusedSkips = $suppressionFilter->getUnusedSkips();
 
             $violationsCount += \count($matchedSearches);
 
@@ -86,7 +87,7 @@ final class PhpMetricsChecker
         $metrics->attach($foundSearch);
 
         try {
-            (new SearchReporter($config, $output))->generate($metrics);
+            (new SearchReporter($config, $output))->generate($metrics, $unusedSkips);
         } catch (Exception $exception) {
             $output->writeln(\sprintf('<error>Cannot generate report: %s</error>', $exception->getMessage()));
             $output->writeln('');
